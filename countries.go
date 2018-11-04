@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -9,10 +10,14 @@ import (
 	"os"
 )
 
-type country struct {
-	Capital string `json:"capital"`
+type Country struct {
+	Capital string
 	//Currency string `json:"`
 	//Language string
+}
+
+type countryResp struct {
+	Collection []Country
 }
 
 func main() {
@@ -32,7 +37,9 @@ func main() {
 		log.Fatal(readErr)
 	}
 
-	bodyText := string(body)
+	countries := make([]Country, 0)
 
-	fmt.Println(bodyText)
+	json.Unmarshal(body, &countries)
+
+	fmt.Println("The capital of "+countryName+" is: ", countries)
 }
