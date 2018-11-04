@@ -11,9 +11,14 @@ import (
 )
 
 type Country struct {
-	Capital string
-	//Currency string `json:"`
+	Capital  string         `json:"capital"`
+	Currency []CurrencyJson `json:"currencies"`
 	//Language string
+}
+
+type CurrencyJson struct {
+	CurrencyName   string `json:"name"`
+	CurrencySymbol string `json:"symbol"`
 }
 
 type countryResp struct {
@@ -38,8 +43,7 @@ func main() {
 	}
 
 	countries := make([]Country, 0)
-
 	json.Unmarshal(body, &countries)
 
-	fmt.Println("The capital of "+countryName+" is: ", countries)
+	fmt.Println("Capital, currency and symbol: ", countries)
 }
