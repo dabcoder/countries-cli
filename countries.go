@@ -10,8 +10,11 @@ import (
 	"strings"
 )
 
+const baseURL = "https://restcountries.eu/rest/v2"
+
 type Country struct {
 	Capital  string         `json:"capital"`
+	Population int			`json:"population"`
 	Currency []CurrencyJson `json:"currencies"`
 	Language []LanguageJson `json:"languages"`
 }
@@ -26,7 +29,6 @@ type LanguageJson struct {
 }
 
 func main() {
-	const baseURL = "https://restcountries.eu/rest/v2"
 	var fullURL string
 	countryName := os.Args[1:]
 	if len(countryName) > 1 {
@@ -40,6 +42,7 @@ func main() {
 		fmt.Println("There was an issue completing this request")
 		log.Fatal(err)
 	}
+	defer resp.Body.Close()
 
 	body, readErr := ioutil.ReadAll(resp.Body)
 	if readErr != nil {
@@ -50,6 +53,7 @@ func main() {
 	json.Unmarshal(body, &countries)
 
 	fmt.Println("Capital:", countries[0].Capital)
+	fmt.Println("Population:", countries[0].Population)
 	fmt.Println("Currency:", countries[0].Currency[0].CurrencyName)
 	fmt.Println("Symbol:", countries[0].Currency[0].CurrencySymbol)
 	fmt.Println("Language:", countries[0].Language[0].LanguageName)
