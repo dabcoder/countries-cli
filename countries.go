@@ -10,13 +10,14 @@ import (
 	"strings"
 )
 
-const baseURL = "https://restcountries.eu/rest/v2"
+const baseURL = "https://restcountries.eu/rest/v2/name/"
+const endOfURL = "?fullText=true"
 
 type Country struct {
-	Capital  string         `json:"capital"`
-	Population int			`json:"population"`
-	Currency []CurrencyJson `json:"currencies"`
-	Language []LanguageJson `json:"languages"`
+	Capital    string         `json:"capital"`
+	Population int            `json:"population"`
+	Currency   []CurrencyJson `json:"currencies"`
+	Language   []LanguageJson `json:"languages"`
 }
 
 type CurrencyJson struct {
@@ -33,9 +34,9 @@ func main() {
 	countryName := os.Args[1:]
 	if len(countryName) > 1 {
 		countryWeb := strings.Join(countryName, "%20")
-		fullURL = baseURL + "/name/" + countryWeb + "?fullText=true"
+		fullURL = fmt.Sprintf("%s%s%s", baseURL, countryWeb, endOfURL)
 	} else {
-		fullURL = baseURL + "/name/" + countryName[0] + "?fullText=true"
+		fullURL = fmt.Sprintf("%s%s%s", baseURL, countryName[0], endOfURL)
 	}
 	resp, err := http.Get(fullURL)
 	if err != nil {
@@ -54,7 +55,6 @@ func main() {
 
 	fmt.Println("Capital:", countries[0].Capital)
 	fmt.Println("Population:", countries[0].Population)
-	fmt.Println("Currency:", countries[0].Currency[0].CurrencyName)
-	fmt.Println("Symbol:", countries[0].Currency[0].CurrencySymbol)
+	fmt.Println("Currency:", countries[0].Currency[0].CurrencyName, countries[0].Currency[0].CurrencySymbol)
 	fmt.Println("Language:", countries[0].Language[0].LanguageName)
 }
