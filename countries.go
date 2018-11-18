@@ -64,16 +64,24 @@ func main() {
 			fullURL = fmt.Sprintf("%s%s%s", baseURL, countryName, endOfURL)
 		}
 
-		resp, err := http.Get(fullURL)
+		// Create a client to set a User-Agent
+		client := &http.Client{}
+		req, err := http.NewRequest("GET", fullURL, nil)
 		if err != nil {
 			fmt.Println("There was an issue completing this request")
 			log.Fatal(err)
 		}
+		req.Header.Set("User-Agent", "Terminal/1.0")
+		resp, err := client.Do(req)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer resp.Body.Close()
+
 		// Mispelled country name or response code != 200
 		if resp.StatusCode != 200 {
 			return cli.NewExitError("Couldn't find any info", 0)
 		}
-		defer resp.Body.Close()
 
 		body, readErr := ioutil.ReadAll(resp.Body)
 		if readErr != nil {
