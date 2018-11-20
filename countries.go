@@ -88,6 +88,7 @@ func main() {
 			log.Fatal(readErr)
 		}
 
+		// The API returns an array of size 1
 		countries := make([]Country, 0)
 		json.Unmarshal(body, &countries)
 
